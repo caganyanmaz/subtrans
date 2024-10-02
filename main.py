@@ -1,4 +1,6 @@
 from argparse import ArgumentParser
+from googletrans import Translator
+import srt
 
 
 def main():
@@ -24,7 +26,13 @@ def translate_file(in_file, out_file, fr, to):
 
 
 def translate_data(data, fr, to):
-    return data + " " + fr + " " + to
+    translator = Translator()
+    subtitles = list(srt.parse(data))
+    subtitle_count = len(subtitles)
+    for i, subtitle in enumerate(subtitles):
+        print(f"Translated {i}/{subtitle_count} subtitles...")
+        subtitle.content = translator.translate(subtitle.content, src=fr, dest=to).text
+    return srt.compose(sub)
 
 
 def create_default_output_filename(filename, fr, to):
